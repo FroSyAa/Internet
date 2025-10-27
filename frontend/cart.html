@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина - moto-moto</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <img src="/images/logo.png" alt="moto-moto" onerror="this.src='/images/basket.svg'">
+                        <h1>moto-moto</h1>
+                    </div>
+                    <ul class="nav-menu" id="nav-menu">
+                        <li><a href="/" class="nav-link">Главная</a></li>
+                        <li><a href="/#about" class="nav-link">О нас</a></li>
+                        <li><a href="/#categories" class="nav-link">Каталог</a></li>
+                        <li><a href="/#contact" class="nav-link">Контакты</a></li>
+                    </ul>
+                    <div class="nav-icons">
+                        <a href="/cart.html" class="nav-icon cart-icon">
+                            <img src="/images/basket.png" alt="Корзина" onerror="this.src='/images/basket.svg'">
+                            <span class="cart-badge" id="cart-badge">0</span>
+                        </a>
+                        <div class="user-menu" id="user-menu"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="cart-section">
+        <div class="container">
+            <h2 class="section-title">Корзина</h2>
+            <div id="cart-content" class="cart-content">
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 moto-moto. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

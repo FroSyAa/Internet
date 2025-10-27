@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - moto-moto</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <img src="/images/logo.png" alt="moto-moto" onerror="this.style.display='none'">
+                        <h1>moto-moto</h1>
+                    </div>
+                    <ul class="nav-menu">
+                        <li><a href="/" class="nav-link">Главная</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-form-container">
+                <h2 class="auth-title">Вход</h2>
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="username">Имя пользователя</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div id="error-message" class="error-message"></div>
+                    <button type="submit" class="auth-button">Войти</button>
+                </form>
+                <p class="auth-switch">Нет аккаунта? <a href="/register.html">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 moto-moto. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="/js/login.js"></script>
+</body>
+</html>

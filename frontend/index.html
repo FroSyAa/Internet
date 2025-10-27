@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>moto-moto - Магазин мотоциклов</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <img src="/images/logo.png" alt="moto-moto" onerror="this.style.display='none'">
+                        <h1>moto-moto</h1>
+                    </div>
+                    <ul class="nav-menu" id="nav-menu">
+                        <li><a href="/" class="nav-link">Главная</a></li>
+                        <li><a href="#about" class="nav-link">О нас</a></li>
+                        <li><a href="#categories" class="nav-link">Каталог</a></li>
+                        <li><a href="#contact" class="nav-link">Контакты</a></li>
+                    </ul>
+                    <div class="nav-icons">
+                        <a href="/cart.html" class="nav-icon cart-icon">
+                            <img src="/images/basket.png" alt="Корзина" onerror="this.src='/images/basket.svg'">
+                            <span class="cart-badge" id="cart-badge">0</span>
+                        </a>
+                        <div class="user-menu" id="user-menu"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Найди свой идеальный мотоцикл</h1>
+            <p class="hero-subtitle">Большой выбор мотоциклов от ведущих производителей</p>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">О нас</h2>
+            <div class="about-content">
+                <p style="text-align: center; font-size: 1.1rem; margin-bottom: 2rem; color: var(--text-light);">
+                    Мы - ведущий магазин мотоциклов с многолетним опытом работы. Предлагаем только качественную технику от проверенных производителей.
+                </p>
+                <ul class="about-list">
+                    <li>Широкий ассортимент мотоциклов</li>
+                    <li>Официальная гарантия</li>
+                    <li>Профессиональная консультация</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">Выберите категорию</h2>
+            <div id="categories-grid" class="categories-grid">
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Контакты</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <img src="/images/location.png" alt="Адрес" class="contact-icon">
+                    <h3>Адрес</h3>
+                    <p>г. Санкт-Петербург, ул. Байкерская, д. 777</p>
+                </div>
+                <div class="contact-item">
+                    <img src="/images/phone.png" alt="Телефон" class="contact-icon">
+                    <h3>Телефон</h3>
+                    <p>+7 (999) 777-77-77</p>
+                </div>
+                <div class="contact-item">
+                    <img src="/images/email.png" alt="Email" class="contact-icon">
+                    <h3>Email</h3>
+                    <p>info@moto-moto.ru</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 moto-moto. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

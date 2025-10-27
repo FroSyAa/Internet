@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        button {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #ffa500;
+        }
+        pre {
+            background: #0d0d0d;
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px solid #333;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .info {
+            color: #ffa500;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Тест API магазина мотоциклов</h1>
+    
+    <div>
+        <button onclick="testAPI()">Тест 1: Проверить API</button>
+        <button onclick="testCategories()">Тест 2: Получить категории</button>
+        <button onclick="testProducts()">Тест 3: Получить товары</button>
+        <button onclick="testDatabase()">Тест 4: Проверить БД</button>
+    </div>
+    
+    <h2>Результаты:</h2>
+    <pre id="results">Нажмите кнопку для запуска теста...</pre>
+
+    <script>
+        const API_URL = '/api';
+        
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            results.innerHTML += `<span class="${className}">${message}</span>\n`;
+        }
+        
+        function clear() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function testAPI() {
+            clear();
+            log('=== ТЕСТ 1: Проверка доступности API ===\n', 'info');
+            
+            try {
+                log('Отправка запроса: GET /api', 'info');
+                const response = await fetch(`${API_URL}`);
+                log(`Статус ответа: ${response.status} ${response.statusText}`, 'info');
+                
+                const data = await response.json();
+                log('Ответ API:', 'success');
+                log(JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                log('ОШИБКА: ' + error.message, 'error');
+                log('Backend не доступен! Проверьте Docker контейнеры.', 'error');
+            }
+        }
+        
+        async function testCategories() {
+            clear();
+            log('=== ТЕСТ 2: Получение категорий ===\n', 'info');
+            
+            try {
+                log('Отправка запроса: GET /api/products/categories', 'info');
+                const response = await fetch(`${API_URL}/products/categories`);
+                log(`Статус ответа: ${response.status} ${response.statusText}`, 'info');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const categories = await response.json();
+                log('Категории получены успешно:', 'success');
+                log(JSON.stringify(categories, null, 2), 'success');
+                log(`\nВсего категорий: ${categories.length}`, 'success');
+            } catch (error) {
+                log('ОШИБКА: ' + error.message, 'error');
+            }
+        }
+        
+        async function testProducts() {
+            clear();
+            log('=== ТЕСТ 3: Получение товаров ===\n', 'info');
+            
+            try {
+                log('Отправка запроса: GET /api/products', 'info');
+                const response = await fetch(`${API_URL}/products`);
+                log(`Статус ответа: ${response.status} ${response.statusText}`, 'info');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const products = await response.json();
+                log('Товары получены успешно:', 'success');
+                log(`Всего товаров: ${products.length}`, 'success');
+                
+                if (products.length > 0) {
+                    log('\nПример первого товара:', 'info');
+                    log(JSON.stringify(products[0], null, 2), 'success');
+                }
+            } catch (error) {
+                log('ОШИБКА: ' + error.message, 'error');
+            }
+        }
+        
+        async function testDatabase() {
+            clear();
+            log('=== ТЕСТ 4: Проверка данных в БД ===\n', 'info');
+            
+            try {
+                log('Шаг 1: Проверка категорий...', 'info');
+                const categoriesResponse = await fetch(`${API_URL}/products/categories`);
+                const categories = await categoriesResponse.json();
+                log(`✓ Категорий в БД: ${categories.length}`, 'success');
+                
+                log('\nШаг 2: Проверка товаров...', 'info');
+                const productsResponse = await fetch(`${API_URL}/products`);
+                const products = await productsResponse.json();
+                log(`✓ Товаров в БД: ${products.length}`, 'success');
+                
+                if (categories.length === 0) {
+                    log('\n⚠ ПРОБЛЕМА: В БД нет категорий!', 'error');
+                    log('Решение: Пересоздайте контейнеры:', 'error');
+                    log('docker-compose down -v', 'error');
+                    log('docker-compose up -d', 'error');
+                }
+                
+                if (products.length === 0) {
+                    log('\n⚠ ПРОБЛЕМА: В БД нет товаров!', 'error');
+                    log('Решение: Пересоздайте контейнеры (см. выше)', 'error');
+                }
+                
+                if (categories.length > 0 && products.length > 0) {
+                    log('\n✓ База данных работает корректно!', 'success');
+                    log('\nКатегории:', 'info');
+                    categories.forEach(cat => log(`  - ${cat}`, 'info'));
+                }
+                
+            } catch (error) {
+                log('ОШИБКА: ' + error.message, 'error');
+                log('\nВозможные причины:', 'error');
+                log('1. Backend не запущен', 'error');
+                log('2. База данных не инициализирована', 'error');
+                log('3. Проблемы с сетью Docker', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
