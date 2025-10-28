@@ -438,11 +438,13 @@ section {
 
 .modal-content {
     background: var(--card-bg);
-    margin: 5% auto;
+    margin: 2% auto;
     padding: 2.5rem;
     border: 2px solid var(--primary);
     border-radius: 10px;
     max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
     animation: slideIn 0.3s;
 }
@@ -996,6 +998,7 @@ section {
     position: relative;
     width: 100%;
     max-width: 500px;
+    max-height: 400px;
     margin: 1rem auto;
     border-radius: 10px;
     overflow: hidden;
@@ -1006,6 +1009,8 @@ section {
 .image-gallery img {
     width: 100%;
     height: auto;
+    max-height: 400px;
+    object-fit: contain;
     display: block;
     transition: opacity 0.2s ease;
 }

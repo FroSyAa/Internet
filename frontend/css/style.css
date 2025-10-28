@@ -443,7 +443,7 @@ section {
     border: 2px solid var(--primary);
     border-radius: 10px;
     max-width: 700px;
-    max-height: 85vh;
+    max-height: 90vh;
     overflow-y: auto;
     position: relative;
     animation: slideIn 0.3s;
@@ -467,6 +467,18 @@ section {
     background: var(--accent);
 }
 
+.modal-content .product-image {
+    max-height: 300px;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.modal-content .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 .modal-content h2 {
     margin: 0.5rem 0;
     font-size: 1.5rem;
@@ -477,7 +489,8 @@ section {
     font-size: 1.1rem;
 }
 
-.modal-content p {
+.modal-content p,
+.modal-content .product-hover-specs {
     margin: 0.5rem 0;
     line-height: 1.5;
 }
@@ -556,12 +569,13 @@ section {
 }
 
 .category-name {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     margin: 0 0 0.5rem 0;
     color: var(--primary);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1px;
+    word-break: break-word;
 }
 
 .category-count {
@@ -746,6 +760,18 @@ section {
     text-align: center;
     padding: 3rem;
     color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    min-height: 300px;
+    justify-content: center;
+}
+
+.cart-empty h3,
+.orders-empty h3 {
+    margin: 0;
+    font-size: 1.5rem;
 }
 
 .cart-items {
@@ -929,9 +955,6 @@ section {
     transition: all 0.3s;
     margin-top: 1rem;
     width: 100%;
-    display: inline-block;
-    text-decoration: none;
-    text-align: center;
 }
 
 .add-to-cart-btn:hover {
@@ -1025,25 +1048,18 @@ section {
 .image-gallery {
     position: relative;
     width: 100%;
-    max-width: 100%;
-    height: 350px;
+    max-width: 100px;
     margin: 1rem auto;
     border-radius: 10px;
     overflow: hidden;
     cursor: ew-resize;
     background: var(--secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .image-gallery img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
+    width: 100%;
     height: auto;
     display: block;
-    object-fit: contain;
     transition: opacity 0.2s ease;
 }
 
@@ -1058,26 +1074,4 @@ section {
     font-size: 0.9rem;
     font-weight: 600;
     pointer-events: none;
-}
-
-.category-image-wrapper {
-    width: 100%;
-    height: 220px;
-    background: linear-gradient(135deg, var(--secondary) 0%, #2a2a2a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.category-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.category-emoji {
-    font-size: 6rem;
-    display: none;
 }

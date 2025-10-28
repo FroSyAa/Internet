@@ -26,8 +26,6 @@ async function loadProducts() {
     try {
         const response = await fetch(`${API_URL}/products?category=${encodeURIComponent(currentCategory)}`);
         products = await response.json();
-        console.log('Loaded products:', products);
-        console.log('First product images:', products[0]?.images);
         displayProducts();
     } catch (error) {
         console.error('Ошибка загрузки товаров:', error);
@@ -43,40 +41,30 @@ function displayProducts() {
         return;
     }
     
-    grid.innerHTML = products.map(product => {
-        // Get first image from images array
-        const firstImage = product.images && product.images.length > 0 
-            ? product.images[0].image_path 
-            : null;
-        
-        console.log(`Product: ${product.product_name}, images:`, product.images, 'firstImage:', firstImage);
-        
-        return `
-            <div class="product-card" onclick="showProductDetails(${product.id})">
-                <div class="product-image">
-                    ${firstImage ? 
-                        `<img src="/images${firstImage}" alt="${product.product_name}" onerror="console.error('Image load error:', this.src); this.style.display='none'; this.parentElement.innerHTML='🏍️'">` 
-                        : '🏍️'
-                    }
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.product_name}</h3>
-                </div>
-                <div class="product-hover-info">
-                    <div class="product-hover-tagline">${product.description || ''}</div>
-                    <div class="product-hover-specs">${product.interest || ''}</div>
-                </div>
+    grid.innerHTML = products.map(product => `
+        <div class="product-card" onclick="showProductDetails(${product.id})">
+            <div class="product-image">
+                ${product.image_url ? 
+                    `<img src="${product.image_url}" alt="${product.product_name}" onerror="this.style.display='none'; this.parentElement.innerHTML='🏍️'">` 
+                    : '🏍️'
+                }
             </div>
-        `;
-    }).join('');
+            <div class="product-info">
+                <h3 class="product-name">${product.product_name}</h3>
+            </div>
+            <div class="product-hover-info">
+                <div class="product-hover-tagline">${product.description}</div>
+                <div class="product-hover-specs">${product.interest}</div>
+            </div>
+        </div>
+    `).join('');
 }
 
 async function loadProductImages(productId) {
     try {
         const response = await fetch(`${API_URL}/products/${productId}/images`);
         const data = await response.json();
-        // Add /images/ prefix to each image path
-        return data.images.map(img => `/images${img.image_path}`) || []; 
+        return data.images.map(img => img.image_path) || []; 
     } catch (error) {
         console.error('Ошибка загрузки изображений:', error);
         return [];
@@ -91,9 +79,8 @@ async function showProductDetails(id) {
         currentProductImages = await loadProductImages(id);
         currentImageIndex = 0;
         
-        // If no images loaded but product has images array, use first one
-        if (currentProductImages.length === 0 && product.images && product.images.length > 0) {
-            currentProductImages = product.images.map(img => `/images${img.image_path}`);
+        if (currentProductImages.length === 0 && product.image_url) {
+            currentProductImages = [product.image_url];
         }
         
         const modalBody = document.getElementById('modal-body');
@@ -119,10 +106,10 @@ async function showProductDetails(id) {
                 
                 <div style="background: var(--secondary); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0; text-align: left;">
                     <h3 style="color: var(--primary); margin-bottom: 1rem;">Характеристики:</h3>
-                    <p style="color: var(--text-light); line-height: 1.8; white-space: pre-line;">${product.interest || 'Не указано'}</p>
+                    <p style="color: var(--text-light); line-height: 1.8; white-space: pre-line;">${product.interest}</p>
                 </div>
                 
-                <p style="text-align: left; margin: 1rem 0; line-height: 1.6; color: var(--text-dim);">${product.description || 'Описание отсутствует'}</p>
+                <p style="text-align: left; margin: 1rem 0; line-height: 1.6; color: var(--text-dim);">${product.description}</p>
                 
                 <div style="font-size: 2.5rem; color: var(--primary); font-weight: 900; margin: 1.5rem 0;">
                     ${formatPrice(product.price)} ₽

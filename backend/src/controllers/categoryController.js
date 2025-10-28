@@ -45,7 +45,7 @@ exports.createCategory = async (req, res) => {
         
         let image_path = null;
         if (req.file) {
-            image_path = `/images/categories/${req.file.filename}`;
+            image_path = `/categories/${req.file.filename}`;
         }
         
         const result = await pool.query(
@@ -84,7 +84,7 @@ exports.updateCategory = async (req, res) => {
                     console.log('Old image not found or already deleted');
                 }
             }
-            image_path = `/images/categories/${req.file.filename}`;
+            image_path = `/categories/${req.file.filename}`;
         }
         
         const result = await pool.query(

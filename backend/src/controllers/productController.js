@@ -162,7 +162,7 @@ exports.uploadImages = async (req, res) => {
         
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
-            const imagePath = `/images/bikes/${safeProductName}/${file.filename}`;
+            const imagePath = `/bikes/${safeProductName}/${file.filename}`;
             
             const result = await pool.query(
                 'INSERT INTO product_images (product_id, image_path, display_order) VALUES ($1, $2, $3) RETURNING *',
@@ -211,11 +211,11 @@ exports.deleteProductImage = async (req, res) => {
             return res.status(404).json({ error: 'Изображение не найдено' });
         }
         
-        const imagePath = path.join(__dirname, '../../../frontend/public', image.rows[0].image_path);
+        const imagePath = path.join('/app/frontend-images', image.rows[0].image_path);
         try {
             await fs.unlink(imagePath);
         } catch (err) {
-            console.log('Image file not found or already deleted');
+            console.log('Image file not found or already deleted:', imagePath);
         }
         
         await pool.query('DELETE FROM product_images WHERE id = $1', [imageId]);

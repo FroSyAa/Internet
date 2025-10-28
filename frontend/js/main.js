@@ -66,9 +66,7 @@ function displayCategories(categoriesData) {
     
     grid.innerHTML = categoriesData.map(categoryData => {
         const categoryName = typeof categoryData === 'object' ? categoryData.name : categoryData;
-        const categoryImagePath = (typeof categoryData === 'object' && categoryData.image_path) 
-            ? `/images${categoryData.image_path}` 
-            : getCategoryImage(categoryName);
+        const categoryImage = (typeof categoryData === 'object' && categoryData.image_path) ? categoryData.image_path : getCategoryImage(categoryName);
         const products = categoryProducts[categoryName] || [];
         const productCount = products.length;
         const first5Products = products.slice(0, 5);
@@ -76,7 +74,7 @@ function displayCategories(categoriesData) {
         return `
             <a href="/category.html?category=${encodeURIComponent(categoryName)}" class="category-card">
                 <div class="category-image-wrapper">
-                    <img src="${categoryImagePath}" 
+                    <img src="${categoryImage}" 
                          alt="${categoryName}" 
                          class="category-image"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">

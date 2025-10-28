@@ -12,7 +12,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./database/pg_hba.conf:/etc/postgresql/pg_hba.conf
     networks:
       - motorcycle_network
     healthcheck:
@@ -21,12 +20,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    command: >
-      postgres
-      -c listen_addresses=*
-      -c password_encryption=scram-sha-256
-    tmpfs:
-      - /var/run/postgresql
 
   redis:
     image: redis:7-alpine
