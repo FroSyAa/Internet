@@ -45,7 +45,8 @@ exports.createCategory = async (req, res) => {
         
         let image_path = null;
         if (req.file) {
-            image_path = `/categories/${req.file.filename}`;
+            // Web-путь под статикой Nginx
+            image_path = `/images/categories/${req.file.filename}`;
         }
         
         const result = await pool.query(
@@ -77,14 +78,15 @@ exports.updateCategory = async (req, res) => {
         let image_path = existing.rows[0].image_path;
         if (req.file) {
             if (existing.rows[0].image_path) {
-                const oldImagePath = path.join('/app/frontend-images', existing.rows[0].image_path);
+                const relativeOld = existing.rows[0].image_path.replace(/^\/images\//, '');
+                const oldImagePath = path.join('/app/frontend-images', relativeOld);
                 try {
                     await fs.unlink(oldImagePath);
                 } catch (err) {
                     console.log('Old image not found or already deleted');
                 }
             }
-            image_path = `/categories/${req.file.filename}`;
+            image_path = `/images/categories/${req.file.filename}`;
         }
         
         const result = await pool.query(
@@ -120,7 +122,8 @@ exports.deleteCategory = async (req, res) => {
         }
         
         if (existing.rows[0].image_path) {
-            const imagePath = path.join(__dirname, '../../../frontend/public', existing.rows[0].image_path);
+            const relativePath = existing.rows[0].image_path.replace(/^\/images\//, '');
+            const imagePath = path.join('/app/frontend-images', relativePath);
             try {
                 await fs.unlink(imagePath);
             } catch (err) {

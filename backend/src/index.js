@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/images', express.static('/app/frontend-images'));
+app.use('/bikes', express.static('/app/frontend-images/bikes'));
+app.use('/categories', express.static('/app/frontend-images/categories'));
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
