@@ -8,6 +8,7 @@ exports.getAllProducts = async (req, res) => {
         
         let query = `
             SELECT p.*, 
+                   (SELECT pi2.image_path FROM product_images pi2 WHERE pi2.product_id = p.id ORDER BY pi2.display_order LIMIT 1) AS image_url,
                    COALESCE(json_agg(
                        json_build_object('id', pi.id, 'image_path', pi.image_path, 'display_order', pi.display_order)
                        ORDER BY pi.display_order
@@ -38,6 +39,7 @@ exports.getProductById = async (req, res) => {
         const { id } = req.params;
         const result = await pool.query(`
             SELECT p.*, 
+                   (SELECT pi2.image_path FROM product_images pi2 WHERE pi2.product_id = p.id ORDER BY pi2.display_order LIMIT 1) AS image_url,
                    COALESCE(json_agg(
                        json_build_object('id', pi.id, 'image_path', pi.image_path, 'display_order', pi.display_order)
                        ORDER BY pi.display_order
@@ -118,11 +120,12 @@ exports.deleteProduct = async (req, res) => {
         );
         
         for (const img of images.rows) {
-            const imagePath = path.join(__dirname, '../../../frontend/public', img.image_path);
+            const relativePath = img.image_path.replace(/^\/images\//, '');
+            const imagePath = path.join('/app/frontend-images', relativePath);
             try {
                 await fs.unlink(imagePath);
             } catch (err) {
-                console.log('Image file not found or already deleted:', img.image_path);
+                console.log('Image file not found or already deleted:', imagePath);
             }
         }
         
@@ -162,7 +165,7 @@ exports.uploadImages = async (req, res) => {
         
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
-            const imagePath = `/bikes/${safeProductName}/${file.filename}`;
+            const imagePath = `/images/bikes/${safeProductName}/${file.filename}`;
             
             const result = await pool.query(
                 'INSERT INTO product_images (product_id, image_path, display_order) VALUES ($1, $2, $3) RETURNING *',
@@ -211,7 +214,8 @@ exports.deleteProductImage = async (req, res) => {
             return res.status(404).json({ error: 'Изображение не найдено' });
         }
         
-        const imagePath = path.join('/app/frontend-images', image.rows[0].image_path);
+        const relativePath = image.rows[0].image_path.replace(/^\/images\//, '');
+        const imagePath = path.join('/app/frontend-images', relativePath);
         try {
             await fs.unlink(imagePath);
         } catch (err) {

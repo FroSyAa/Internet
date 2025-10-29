@@ -1,5 +1,7 @@
+// Подключение либы
 const { Pool } = require('pg');
 
+// Создание клиента ПГ
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
