@@ -2,6 +2,10 @@ const pool = require('../config/database');
 const path = require('path');
 const fs = require('fs').promises;
 
+// Базовый путь к изображениям из переменных окружения
+const IMAGES_PATH = process.env.IMAGES_PATH || '/app/frontend-images';
+
+// Получает все товары или фильтрует по категории; возвращает товары с массивом изображений
 exports.getAllProducts = async (req, res) => {
     try {
         const { category } = req.query;
@@ -34,6 +38,7 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
+// Получает товар по ID со всеми связанными изображениями
 exports.getProductById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -61,6 +66,7 @@ exports.getProductById = async (req, res) => {
     }
 };
 
+// Возвращает список всех категорий (название и путь к изображению)
 exports.getCategories = async (req, res) => {
     try {
         const result = await pool.query(
@@ -73,6 +79,7 @@ exports.getCategories = async (req, res) => {
     }
 };
 
+// Создает новый товар без изображений (изображения загружаются отдельно через uploadImages)
 exports.createProduct = async (req, res) => {
     try {
         const { product_name, price, description, category, interest } = req.body;
@@ -89,6 +96,7 @@ exports.createProduct = async (req, res) => {
     }
 };
 
+// Обновляет данные товара (название, цену, описание и т.д.)
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -110,6 +118,7 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
+// Удаляет товар вместе со всеми связанными изображениями (файлы удаляются с диска)
 exports.deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -121,7 +130,7 @@ exports.deleteProduct = async (req, res) => {
         
         for (const img of images.rows) {
             const relativePath = img.image_path.replace(/^\/images\//, '');
-            const imagePath = path.join('/app/frontend-images', relativePath);
+            const imagePath = path.join(IMAGES_PATH, relativePath);
             try {
                 await fs.unlink(imagePath);
             } catch (err) {
@@ -142,6 +151,10 @@ exports.deleteProduct = async (req, res) => {
     }
 };
 
+/**
+ * Загружает изображения для товара (до MAX_IMAGES_COUNT штук)
+ * Создает безопасное имя папки из названия товара и сохраняет пути в БД
+ */
 exports.uploadImages = async (req, res) => {
     try {
         const { id } = req.params;
@@ -186,6 +199,7 @@ exports.uploadImages = async (req, res) => {
     }
 };
 
+// Получает все изображения товара в порядке отображения
 exports.getProductImages = async (req, res) => {
     try {
         const { id } = req.params;
@@ -201,6 +215,7 @@ exports.getProductImages = async (req, res) => {
     }
 };
 
+// Удаляет конкретное изображение товара по ID (файл удаляется с диска, запись из БД)
 exports.deleteProductImage = async (req, res) => {
     try {
         const { imageId } = req.params;
@@ -215,7 +230,7 @@ exports.deleteProductImage = async (req, res) => {
         }
         
         const relativePath = image.rows[0].image_path.replace(/^\/images\//, '');
-        const imagePath = path.join('/app/frontend-images', relativePath);
+        const imagePath = path.join(IMAGES_PATH, relativePath);
         try {
             await fs.unlink(imagePath);
         } catch (err) {

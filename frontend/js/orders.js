@@ -1,5 +1,7 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Загружает и отображает историю заказов текущего пользователя
 async function loadOrders() {
   const ordersContent = document.getElementById('orders-content');
 
@@ -38,6 +40,7 @@ async function loadOrders() {
   }
 }
 
+// Отображает список заказов с деталями и датой оформления
 function displayOrders(orders) {
   const ordersContent = document.getElementById('orders-content');
   
@@ -76,6 +79,7 @@ function displayOrders(orders) {
   ordersContent.innerHTML = ordersHtml;
 }
 
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
   loadOrders();
 });

@@ -2,6 +2,10 @@ const pool = require('../config/database');
 const path = require('path');
 const fs = require('fs').promises;
 
+// Базовый путь к изображениям из переменных окружения
+const IMAGES_PATH = process.env.IMAGES_PATH || '/app/frontend-images';
+
+// Получает список всех категорий из БД
 exports.getAllCategories = async (req, res) => {
     try {
         const result = await pool.query(
@@ -14,6 +18,7 @@ exports.getAllCategories = async (req, res) => {
     }
 };
 
+// Получает категорию по ID
 exports.getCategoryById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -30,6 +35,7 @@ exports.getCategoryById = async (req, res) => {
     }
 };
 
+// Создает новую категорию с опциональным изображением (файл загружается через multer middleware)
 exports.createCategory = async (req, res) => {
     try {
         const { name } = req.body;
@@ -61,6 +67,7 @@ exports.createCategory = async (req, res) => {
     }
 };
 
+// Обновляет категорию по ID; при загрузке нового изображения удаляет старое
 exports.updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
@@ -79,7 +86,7 @@ exports.updateCategory = async (req, res) => {
         if (req.file) {
             if (existing.rows[0].image_path) {
                 const relativeOld = existing.rows[0].image_path.replace(/^\/images\//, '');
-                const oldImagePath = path.join('/app/frontend-images', relativeOld);
+                const oldImagePath = path.join(IMAGES_PATH, relativeOld);
                 try {
                     await fs.unlink(oldImagePath);
                 } catch (err) {
@@ -101,6 +108,7 @@ exports.updateCategory = async (req, res) => {
     }
 };
 
+// Удаляет категорию по ID; проверяет отсутствие товаров в категории и удаляет связанное изображение
 exports.deleteCategory = async (req, res) => {
     try {
         const { id } = req.params;
@@ -123,7 +131,7 @@ exports.deleteCategory = async (req, res) => {
         
         if (existing.rows[0].image_path) {
             const relativePath = existing.rows[0].image_path.replace(/^\/images\//, '');
-            const imagePath = path.join('/app/frontend-images', relativePath);
+            const imagePath = path.join(IMAGES_PATH, relativePath);
             try {
                 await fs.unlink(imagePath);
             } catch (err) {
@@ -140,6 +148,7 @@ exports.deleteCategory = async (req, res) => {
     }
 };
 
+// Возвращает только названия всех категорий (без дополнительных данных)
 exports.getCategoryNames = async (req, res) => {
     try {
         const result = await pool.query('SELECT name FROM categories ORDER BY name');

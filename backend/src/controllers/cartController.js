@@ -1,6 +1,7 @@
 const redisClient = require('../config/redis');
 
-const CART_TTL = 24 * 60 * 60;
+// Время жизни корзины в Redis (в секундах)
+const CART_TTL = parseInt(process.env.CART_TTL) || 24 * 60 * 60; // 24 часа по умолчанию
 
 const getCart = async (req, res) => {
   try {

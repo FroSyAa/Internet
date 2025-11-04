@@ -1,14 +1,19 @@
+// Базовый URL для API запросов (hardcoded для локальной разработки)
 const API_URL = 'http://localhost:3000/api';
 
+// Массив загруженных категорий
 let categories = [];
+// Массив загруженных товаров
 let products = [];
 
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     loadCategories();
     loadProducts();
     setupForms();
 });
 
+// Переключает активную вкладку в админ-панели
 function showTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -21,6 +26,7 @@ function showTab(tabName) {
     event.target.classList.add('active');
 }
 
+// Загружает список всех категорий с сервера
 async function loadCategories() {
     try {
         const response = await fetch(`${API_URL}/categories`);
@@ -35,6 +41,7 @@ async function loadCategories() {
     }
 }
 
+// Загружает список всех товаров с сервера
 async function loadProducts() {
     try {
         const response = await fetch(`${API_URL}/products`);
@@ -48,12 +55,14 @@ async function loadProducts() {
     }
 }
 
+// Обновляет выпадающий список категорий в форме создания товара
 function updateCategorySelect() {
     const select = document.getElementById('product-category');
     select.innerHTML = '<option value="">Выберите категорию</option>' + 
         categories.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
 }
 
+// Отображает список категорий с кнопками удаления
 function displayCategories() {
     const list = document.getElementById('categories-list');
     
@@ -80,6 +89,7 @@ function displayCategories() {
     `).join('');
 }
 
+// Отображает список товаров с информацией о них и кнопками удаления
 function displayProducts() {
     const list = document.getElementById('products-list');
     
@@ -106,6 +116,7 @@ function displayProducts() {
     }).join('');
 }
 
+// Настраивает обработчики отправки форм для создания категорий и товаров
 function setupForms() {
     document.getElementById('category-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -194,6 +205,7 @@ function setupForms() {
     });
 }
 
+// Удаляет категорию по ID после подтверждения пользователя
 async function deleteCategory(id) {
     if (!confirm('Удалить категорию?')) return;
     
@@ -215,6 +227,7 @@ async function deleteCategory(id) {
     }
 }
 
+// Удаляет товар по ID после подтверждения пользователя
 async function deleteProduct(id) {
     if (!confirm('Удалить товар?')) return;
     
@@ -236,6 +249,7 @@ async function deleteProduct(id) {
     }
 }
 
+// Показывает временное уведомление на странице (success или error)
 function showMessage(text, type) {
     const messageDiv = document.getElementById('message');
     messageDiv.textContent = text;

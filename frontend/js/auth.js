@@ -1,39 +1,49 @@
+// Объект для управления аутентификацией пользователя
 const auth = {
+  // Получает JWT токен из localStorage
   getToken() {
     return localStorage.getItem('token');
   },
 
+  // Сохраняет JWT токен в localStorage
   setToken(token) {
     localStorage.setItem('token', token);
   },
 
+  // Удаляет JWT токен из localStorage
   removeToken() {
     localStorage.removeItem('token');
   },
 
+  // Проверяет, авторизован ли пользователь
   isAuthenticated() {
     return !!this.getToken();
   },
 
+  // Получает данные пользователя из localStorage
   getUser() {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
   },
 
+  // Сохраняет данные пользователя в localStorage
   setUser(user) {
     localStorage.setItem('user', JSON.stringify(user));
   },
 
+  // Удаляет данные пользователя из localStorage
   removeUser() {
     localStorage.removeItem('user');
   },
 
+  // Выполняет выход пользователя: удаляет токен и данные, перенаправляет на главную
   logout() {
     this.removeToken();
     this.removeUser();
     window.location.href = '/';
   },
 
+  // Выполняет fetch запрос с автоматическим добавлением Authorization заголовка
   async fetchWithAuth(url, options = {}) {
     const token = this.getToken();
     
@@ -60,6 +70,7 @@ const auth = {
   }
 };
 
+// Обновляет меню пользователя в навигации: показывает имя и кнопку выхода или ссылки входа/регистрации
 function updateUserMenu() {
   const userMenu = document.getElementById('user-menu');
   if (!userMenu) return;
@@ -78,6 +89,7 @@ function updateUserMenu() {
   }
 }
 
+// Обновляет бейдж корзины: загружает количество товаров и отображает его
 async function updateCartBadge() {
   const cartBadge = document.getElementById('cart-badge');
   if (!cartBadge) return;
@@ -112,7 +124,7 @@ if (document.readyState === 'loading') {
   updateCartBadge();
 }
 
-// Экспортируем для использования в других скриптах
+// Экспортирует объекты и функции в глобальную область видимости для использования в других скриптах
 window.auth = auth;
 window.updateUserMenu = updateUserMenu;
 window.updateCartBadge = updateCartBadge;

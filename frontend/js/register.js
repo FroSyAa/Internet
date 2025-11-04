@@ -1,5 +1,7 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Обработчик отправки формы регистрации: валидирует данные, отправляет запрос и сохраняет токен
 document.getElementById('register-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 

@@ -1,9 +1,14 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Массив всех товаров
 let products = [];
+// Массив всех категорий
 let categories = [];
+// Текущий выбранный фильтр категории
 let currentFilter = 'all';
 
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     loadProducts();
     loadCategories();
@@ -33,6 +38,7 @@ async function loadCategories() {
     }
 }
 
+// Создает кнопки фильтров категорий
 function createFilterButtons() {
     const container = document.querySelector('.filter-buttons');
     
@@ -47,7 +53,7 @@ function createFilterButtons() {
     });
 }
 
-// Отображение товаров
+// Отображает товары в виде карточек на странице
 function displayProducts(filteredProducts = products) {
     const grid = document.getElementById('products-grid');
     
@@ -96,7 +102,7 @@ function filterByCategory(category) {
     }
 }
 
-// Показать детали товара в модальном окне
+// Загружает и отображает детальную информацию о товаре в модальном окне
 async function showProductDetails(id) {
     try {
         const response = await fetch(`${API_URL}/products/${id}`);
@@ -133,23 +139,23 @@ async function showProductDetails(id) {
     }
 }
 
-// Форматирование цены
+// Форматирует цену в формат с разделителями тысяч
 function formatPrice(price) {
     return new Intl.NumberFormat('ru-RU').format(price);
 }
 
-// Сокращение текста
+// Обрезает текст до указанной длины и добавляет троеточие
 function truncateText(text, maxLength) {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
 }
 
-// Показать ошибку
+// Выводит сообщение об ошибке в консоль
 function showError(message) {
     console.error(message);
 }
 
-// Настройка обработчиков событий
+// Настраивает обработчики событий для модального окна и плавной прокрутки
 function setupEventListeners() {
     document.querySelector('.modal-close').onclick = () => {
         document.getElementById('modal').style.display = 'none';

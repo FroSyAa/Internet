@@ -2,9 +2,15 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+// Константы из переменных окружения
+const IMAGES_CATEGORIES_PATH = process.env.IMAGES_CATEGORIES_PATH || '/app/frontend-images/categories';
+const IMAGES_BIKES_PATH = process.env.IMAGES_BIKES_PATH || '/app/frontend-images/bikes';
+const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024; // 5MB по умолчанию
+const MAX_IMAGES_COUNT = parseInt(process.env.MAX_IMAGES_COUNT) || 10;
+
 const categoryStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = '/app/frontend-images/categories';
+    const uploadPath = IMAGES_CATEGORIES_PATH;
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -39,7 +45,7 @@ const productStorage = multer.diskStorage({
         .replace(/\s+/g, '_')
         .toLowerCase();
       
-      const uploadPath = '/app/frontend-images/bikes/' + productName;
+      const uploadPath = IMAGES_BIKES_PATH + '/' + productName;
       
       console.log('Upload path:', uploadPath);
       
@@ -72,15 +78,15 @@ const fileFilter = (req, file, cb) => {
 
 const uploadCategory = multer({
   storage: categoryStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: fileFilter
 }).single('image');
 
 const uploadProductImages = multer({
   storage: productStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: fileFilter
-}).array('images', 10);
+}).array('images', MAX_IMAGES_COUNT);
 
 module.exports = {
   uploadCategory,

@@ -1,5 +1,7 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Загружает и отображает содержимое корзины текущего пользователя
 async function loadCart() {
   const cartContent = document.getElementById('cart-content');
 
@@ -38,6 +40,7 @@ async function loadCart() {
   }
 }
 
+// Отображает товары корзины с кнопками управления количеством и общей суммой
 function displayCart(cartData) {
   const cartContent = document.getElementById('cart-content');
   
@@ -67,6 +70,7 @@ function displayCart(cartData) {
   `;
 }
 
+// Обновляет количество товара в корзине
 async function updateQuantity(productId, newQuantity) {
   try {
     const response = await auth.fetchWithAuth(`${API_URL}/cart/update`, {
@@ -83,6 +87,7 @@ async function updateQuantity(productId, newQuantity) {
   }
 }
 
+// Удаляет товар из корзины по ID
 async function removeItem(productId) {
   try {
     const response = await auth.fetchWithAuth(`${API_URL}/cart/${productId}`, {
@@ -98,6 +103,7 @@ async function removeItem(productId) {
   }
 }
 
+// Оформляет заказ из текущей корзины и перенаправляет на страницу заказов
 async function checkout() {
   try {
     const response = await auth.fetchWithAuth(`${API_URL}/orders`, {
@@ -118,6 +124,7 @@ async function checkout() {
   }
 }
 
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
   loadCart();
 });

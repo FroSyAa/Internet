@@ -58,12 +58,3 @@ CREATE TABLE IF NOT EXISTS product_images (
 
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_product_images_product_id ON product_images(product_id);
-
-INSERT INTO categories (name, image_path) VALUES
-('Спортбайки', '/images/categories/sport.png'),
-('Круизеры', '/images/categories/cruiser.png'),
-('Туристические', '/images/categories/touring.png'),
-('Кастомы', '/images/categories/custom.png'),
-('Эндуро', '/images/categories/enduro.png'),
-('Классик', '/images/categories/classic.png')
-ON CONFLICT (name) DO NOTHING;

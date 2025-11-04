@@ -1,9 +1,9 @@
-// Simple admin authentication middleware
-// In production, use proper authentication with hashed passwords
+// Простая аутентификация администратора
+// В продакшене использовать настоящую аутентификацию с хешированными паролями
 
 const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: 'admin123' // Change this in production!
+    username: process.env.ADMIN_USERNAME || 'admin',
+    password: process.env.ADMIN_PASSWORD || 'admin123'
 };
 
 // Store active sessions (in production, use Redis or proper session store)

@@ -1,5 +1,7 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Обработчик отправки формы входа: отправляет данные на сервер и сохраняет токен при успехе
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 

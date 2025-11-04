@@ -1,10 +1,16 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Массив товаров текущей категории
 let products = [];
+// Текущая выбранная категория из URL
 let currentCategory = '';
+// Массив изображений текущего открытого товара
 let currentProductImages = [];
+// Индекс текущего отображаемого изображения в галерее
 let currentImageIndex = 0;
 
+// Инициализация при загрузке страницы: получает категорию из URL и загружает товары
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     currentCategory = urlParams.get('category');
@@ -22,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
+// Загружает товары выбранной категории с сервера
 async function loadProducts() {
     try {
         const response = await fetch(`${API_URL}/products?category=${encodeURIComponent(currentCategory)}`);
@@ -33,6 +40,7 @@ async function loadProducts() {
     }
 }
 
+// Отображает товары категории в виде карточек с эффектом наведения
 function displayProducts() {
     const grid = document.getElementById('products-grid');
     
@@ -60,6 +68,7 @@ function displayProducts() {
     `).join('');
 }
 
+// Загружает все изображения товара по ID
 async function loadProductImages(productId) {
     try {
         const response = await fetch(`${API_URL}/products/${productId}/images`);
@@ -71,6 +80,7 @@ async function loadProductImages(productId) {
     }
 }
 
+// Загружает и отображает детальную информацию о товаре в модальном окне с галереей изображений
 async function showProductDetails(id) {
     try {
         const response = await fetch(`${API_URL}/products/${id}`);
@@ -126,6 +136,7 @@ async function showProductDetails(id) {
     }
 }
 
+// Обрабатывает движение мыши в галерее изображений: переключает изображения в зависимости от позиции курсора
 function handleGalleryMouseMove(event) {
     if (currentProductImages.length <= 1) return;
     
@@ -153,6 +164,7 @@ function handleGalleryMouseMove(event) {
     }
 }
 
+// Добавляет товар в корзину пользователя
 async function addToCart(productId, productName, price) {
     try {
         const response = await auth.fetchWithAuth(`${API_URL}/cart/add`, {
@@ -177,14 +189,17 @@ async function addToCart(productId, productName, price) {
     }
 }
 
+// Форматирует цену в формат с разделителями тысяч
 function formatPrice(price) {
     return new Intl.NumberFormat('ru-RU').format(price);
 }
 
+// Выводит сообщение об ошибке в консоль
 function showError(message) {
     console.error(message);
 }
 
+// Настраивает обработчики событий для модального окна
 function setupEventListeners() {
     document.querySelector('.modal-close').onclick = () => {
         document.getElementById('modal').style.display = 'none';

@@ -1,14 +1,19 @@
+// Базовый URL для API запросов
 const API_URL = '/api';
 
+// Массив загруженных категорий
 let categories = [];
+// Объект с товарами каждой категории (ключ - название категории)
 let categoryProducts = {};
 
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Страница загружена, начинаю загрузку категорий...');
     loadCategories();
     setupEventListeners();
 });
 
+// Загружает список всех категорий с сервера и отображает их на странице
 async function loadCategories() {
     try {
         console.log('Запрос категорий:', `${API_URL}/categories`);
@@ -33,6 +38,7 @@ async function loadCategories() {
     }
 }
 
+// Загружает товары для всех категорий параллельно
 async function loadAllCategoryProducts() {
     try {
         const promises = categories.map(async (categoryName) => {
@@ -48,6 +54,7 @@ async function loadAllCategoryProducts() {
     }
 }
 
+// Отображает карточки категорий на странице с превью первых 5 товаров
 function displayCategories(categoriesData) {
     const grid = document.getElementById('categories-grid');
     
@@ -106,6 +113,7 @@ function displayCategories(categoriesData) {
     console.log('Категории отображены успешно');
 }
 
+// Возвращает путь к изображению категории по её названию
 function getCategoryImage(category) {
     const imageMap = {
         'Спортбайки': '/images/categories/sport.png',
@@ -118,6 +126,7 @@ function getCategoryImage(category) {
     return imageMap[category] || '/images/categories/default.png';
 }
 
+// Возвращает эмодзи для категории в качестве запасного варианта отображения
 function getCategoryEmoji(category) {
     const emojis = {
         'Спортбайки': '🏍️',
@@ -130,6 +139,7 @@ function getCategoryEmoji(category) {
     return emojis[category] || '🏍️';
 }
 
+// Склоняет слово в зависимости от числа (например: 1 мотоцикл, 2 мотоцикла, 5 мотоциклов)
 function pluralize(count, one, two, five) {
     let n = Math.abs(count);
     n %= 100;
@@ -146,6 +156,7 @@ function pluralize(count, one, two, five) {
     return five;
 }
 
+// Отображает сообщение об ошибке на странице
 function showError(message) {
     const grid = document.getElementById('categories-grid');
     if (grid) {
@@ -153,6 +164,7 @@ function showError(message) {
     }
 }
 
+// Настраивает обработчики событий для плавной прокрутки по якорным ссылкам
 function setupEventListeners() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
