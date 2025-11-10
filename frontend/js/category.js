@@ -1,16 +1,10 @@
-// Базовый URL для API запросов
 const API_URL = '/api';
 
-// Массив товаров текущей категории
 let products = [];
-// Текущая выбранная категория из URL
 let currentCategory = '';
-// Массив изображений текущего открытого товара
 let currentProductImages = [];
-// Индекс текущего отображаемого изображения в галерее
 let currentImageIndex = 0;
 
-// Инициализация при загрузке страницы: получает категорию из URL и загружает товары
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     currentCategory = urlParams.get('category');
@@ -28,11 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
-// Загружает товары выбранной категории с сервера
 async function loadProducts() {
     try {
         const response = await fetch(`${API_URL}/products?category=${encodeURIComponent(currentCategory)}`);
         products = await response.json();
+        console.log('Loaded products:', products);
         displayProducts();
     } catch (error) {
         console.error('Ошибка загрузки товаров:', error);
@@ -40,7 +34,22 @@ async function loadProducts() {
     }
 }
 
-// Отображает товары категории в виде карточек с эффектом наведения
+// ИСПРАВЛЕНО: функция добавляет /images/ только если его нет в пути
+function normalizeImagePath(imagePath) {
+    if (!imagePath) return null;
+    
+    // Если путь уже начинается с /images/, возвращаем как есть
+    if (imagePath.startsWith('/images/')) {
+        return imagePath;
+    }
+    
+    // Если путь начинается с /, убираем его
+    const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+    
+    // Добавляем /images/ префикс
+    return `/images/${cleanPath}`;
+}
+
 function displayProducts() {
     const grid = document.getElementById('products-grid');
     
@@ -49,38 +58,47 @@ function displayProducts() {
         return;
     }
     
-    grid.innerHTML = products.map(product => `
-        <div class="product-card" onclick="showProductDetails(${product.id})">
-            <div class="product-image">
-                ${product.image_url ? 
-                    `<img src="${product.image_url}" alt="${product.product_name}" onerror="this.style.display='none'; this.parentElement.innerHTML='🏍️'">` 
-                    : '🏍️'
-                }
+    grid.innerHTML = products.map(product => {
+        // Берем первое изображение из массива images
+        const firstImage = product.images && product.images.length > 0 
+            ? normalizeImagePath(product.images[0].image_path)
+            : null;
+        
+        console.log(`Product: ${product.product_name}, normalized image:`, firstImage);
+        
+        return `
+            <div class="product-card" onclick="showProductDetails(${product.id})">
+                <div class="product-image">
+                    ${firstImage ? 
+                        `<img src="${firstImage}" alt="${product.product_name}" 
+                              onerror="console.error('Image load error:', this.src); this.style.display='none'; this.parentElement.innerHTML='🏍️'">` 
+                        : '🏍️'
+                    }
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.product_name}</h3>
+                </div>
+                <div class="product-hover-info">
+                    <div class="product-hover-tagline">${product.description || ''}</div>
+                    <div class="product-hover-specs">${product.interest || ''}</div>
+                </div>
             </div>
-            <div class="product-info">
-                <h3 class="product-name">${product.product_name}</h3>
-            </div>
-            <div class="product-hover-info">
-                <div class="product-hover-tagline">${product.description}</div>
-                <div class="product-hover-specs">${product.interest}</div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
-// Загружает все изображения товара по ID
 async function loadProductImages(productId) {
     try {
         const response = await fetch(`${API_URL}/products/${productId}/images`);
         const data = await response.json();
-        return data.images.map(img => img.image_path) || []; 
+        // Нормализуем все пути изображений
+        return data.images.map(img => normalizeImagePath(img.image_path)).filter(Boolean);
     } catch (error) {
         console.error('Ошибка загрузки изображений:', error);
         return [];
     }
 }
 
-// Загружает и отображает детальную информацию о товаре в модальном окне с галереей изображений
 async function showProductDetails(id) {
     try {
         const response = await fetch(`${API_URL}/products/${id}`);
@@ -89,8 +107,9 @@ async function showProductDetails(id) {
         currentProductImages = await loadProductImages(id);
         currentImageIndex = 0;
         
-        if (currentProductImages.length === 0 && product.image_url) {
-            currentProductImages = [product.image_url];
+        // Если нет загруженных изображений, но есть массив images в продукте
+        if (currentProductImages.length === 0 && product.images && product.images.length > 0) {
+            currentProductImages = product.images.map(img => normalizeImagePath(img.image_path)).filter(Boolean);
         }
         
         const modalBody = document.getElementById('modal-body');
@@ -116,10 +135,10 @@ async function showProductDetails(id) {
                 
                 <div style="background: var(--secondary); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0; text-align: left;">
                     <h3 style="color: var(--primary); margin-bottom: 1rem;">Характеристики:</h3>
-                    <p style="color: var(--text-light); line-height: 1.8; white-space: pre-line;">${product.interest}</p>
+                    <p style="color: var(--text-light); line-height: 1.8; white-space: pre-line;">${product.interest || 'Не указано'}</p>
                 </div>
                 
-                <p style="text-align: left; margin: 1rem 0; line-height: 1.6; color: var(--text-dim);">${product.description}</p>
+                <p style="text-align: left; margin: 1rem 0; line-height: 1.6; color: var(--text-dim);">${product.description || 'Описание отсутствует'}</p>
                 
                 <div style="font-size: 2.5rem; color: var(--primary); font-weight: 900; margin: 1.5rem 0;">
                     ${formatPrice(product.price)} ₽
@@ -136,7 +155,6 @@ async function showProductDetails(id) {
     }
 }
 
-// Обрабатывает движение мыши в галерее изображений: переключает изображения в зависимости от позиции курсора
 function handleGalleryMouseMove(event) {
     if (currentProductImages.length <= 1) return;
     
@@ -145,7 +163,6 @@ function handleGalleryMouseMove(event) {
     const mouseX = event.clientX - rect.left;
     const galleryWidth = rect.width;
     
-    // Calculate which image to show based on mouse position
     const imageIndex = Math.floor((mouseX / galleryWidth) * currentProductImages.length);
     const clampedIndex = Math.max(0, Math.min(imageIndex, currentProductImages.length - 1));
     
@@ -164,7 +181,6 @@ function handleGalleryMouseMove(event) {
     }
 }
 
-// Добавляет товар в корзину пользователя
 async function addToCart(productId, productName, price) {
     try {
         const response = await auth.fetchWithAuth(`${API_URL}/cart/add`, {
@@ -189,17 +205,14 @@ async function addToCart(productId, productName, price) {
     }
 }
 
-// Форматирует цену в формат с разделителями тысяч
 function formatPrice(price) {
     return new Intl.NumberFormat('ru-RU').format(price);
 }
 
-// Выводит сообщение об ошибке в консоль
 function showError(message) {
     console.error(message);
 }
 
-// Настраивает обработчики событий для модального окна
 function setupEventListeners() {
     document.querySelector('.modal-close').onclick = () => {
         document.getElementById('modal').style.display = 'none';

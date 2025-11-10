@@ -5,8 +5,8 @@ const fs = require('fs');
 // Константы из переменных окружения
 const IMAGES_CATEGORIES_PATH = process.env.IMAGES_CATEGORIES_PATH || '/app/frontend-images/categories';
 const IMAGES_BIKES_PATH = process.env.IMAGES_BIKES_PATH || '/app/frontend-images/bikes';
-const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024; // 5MB по умолчанию
-const MAX_IMAGES_COUNT = parseInt(process.env.MAX_IMAGES_COUNT) || 10;
+const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024; // 50MB по умолчанию
+const MAX_IMAGES_COUNT = parseInt(process.env.MAX_IMAGES_COUNT) || 20;
 
 const categoryStorage = multer.diskStorage({
   destination: function (req, file, cb) {

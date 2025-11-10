@@ -1,15 +1,10 @@
 FROM nginx:alpine
 
-COPY index.html /usr/share/nginx/html/
-COPY category.html /usr/share/nginx/html/
-COPY cart.html /usr/share/nginx/html/
-COPY orders.html /usr/share/nginx/html/
-COPY login.html /usr/share/nginx/html/
-COPY register.html /usr/share/nginx/html/
-COPY test-api.html /usr/share/nginx/html/
-COPY admin.html /usr/share/nginx/html/
+COPY *.html /usr/share/nginx/html/
 
-COPY public /usr/share/nginx/html/
+COPY public/css /usr/share/nginx/html/css/
+COPY public/images /usr/share/nginx/html/images/
+COPY js /usr/share/nginx/html/js/
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
